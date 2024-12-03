@@ -20,6 +20,7 @@ library(rectpacker)
 <!-- badges: start -->
 ![](https://img.shields.io/badge/cool-useless-green.svg)
 [![CRAN](https://www.r-pkg.org/badges/version/rectpacker)](https://CRAN.R-project.org/package=rectpacker)
+[![R-CMD-check](https://github.com/coolbutuseless/rectpacker/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/coolbutuseless/rectpacker/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 'rectpacker' implements the skyline algorithm for packing rectangles into a box.

@@ -6,3 +6,4 @@
 ^working$
 ^.devcontainer$
 ^man/figures$
+^\.github$
