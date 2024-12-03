@@ -1,0 +1,18 @@
+Package: rectpacker
+Type: Package
+Title: Streaming Rectangle Packing
+Version: 0.1.0
+Authors@R: c(
+    person("Mike", "Cheng", role = c("aut", "cre", 'cph'), email = "mikefc@coolbutuseless.com")
+    )
+Maintainer: Mike Cheng <mikefc@coolbutuseless.com>
+URL: https://github.com/coolbutuseless/rectpacker
+BugReports: https://github.com/coolbutuseless/rectpacker/issues
+Description: Streaming rectangle packing.
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.3.2
+Copyright: The included 'stb_rect_pack.h' header (v1.01) is Copyright (c) 2017 
+    Sean Barrett and licensed under the MIT license.  
+    See COPYRIGHTS file for more details.

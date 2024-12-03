@@ -1,0 +1,95 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = FALSE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+
+library(rectpacker)
+```
+
+# rectpacker
+
+<!-- badges: start -->
+![](https://img.shields.io/badge/cool-useless-green.svg)
+[![CRAN](https://www.r-pkg.org/badges/version/rectpacker)](https://CRAN.R-project.org/package=rectpacker)
+<!-- badges: end -->
+
+'rectpacker' implements the skyline algorithm for packing rectangles into a box.
+
+This package uses `stb_rect_pack.h` from [stb](https://github.com/nothings/stb).
+
+## Installation
+
+<!-- This package can be installed from CRAN -->
+
+<!-- ``` r -->
+<!-- install.packages('rectpacker') -->
+<!-- ``` -->
+
+You can install the latest development version from
+[GitHub](https://github.com/coolbutuseless/rectpacker) with:
+
+``` r
+# install.package('remotes')
+remotes::install_github('coolbutuseless/rectpacker')
+```
+
+<!-- Pre-built source/binary versions can also be installed from -->
+<!-- [R-universe](https://r-universe.dev) -->
+
+<!-- ``` r -->
+<!-- install.packages('rectpacker', repos = c('https://coolbutuseless.r-universe.dev', 'https://cloud.r-project.org')) -->
+<!-- ``` -->
+
+## Simple example
+
+Pack 100 randomly sized rectangles into a 50x25 box
+
+```{r example}
+library(ggplot2)
+library(rectpacker)
+
+set.seed(1)
+N       <- 100
+widths  <- sample(7, N, replace = TRUE)
+heights <- sample(6, N, replace = TRUE)
+rects   <- pack_rects(50, 25, widths, heights)
+rects$w <- widths
+rects$h <- heights
+
+# How many of the 100 rectangles actually got packed?
+table(rects$packed)
+
+# Keep only the rects which were able to be packed into the box
+rects <- subset(rects, packed == TRUE)
+head(rects)
+
+# Plot the rectangles
+ggplot(rects) +
+  geom_rect(
+    aes(
+      xmin = x,
+      ymin = y,
+      xmax = x + w,
+      ymax = y + h,
+      fill = as.factor(idx)
+    ),
+    col  = 'black'
+  ) + 
+  annotate('rect', xmin = 0, ymin = 0, xmax = 50, ymax = 25, fill = NA, col = 'red') + 
+  coord_equal() + 
+  theme_minimal() + 
+  theme(legend.position = 'none') + 
+  scale_fill_viridis_d()
+```
+
+
+
