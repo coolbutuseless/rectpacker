@@ -24,6 +24,9 @@ library(rectpacker)
 
 'rectpacker' implements the skyline algorithm for packing rectangles into a box.
 
+I wrote this package as I needed to assemble graphical assets
+into a single image - hopefully minimising the size of the final image.
+
 This package uses `stb_rect_pack.h` from [stb](https://github.com/nothings/stb).
 
 ## Installation
@@ -49,9 +52,12 @@ remotes::install_github('coolbutuseless/rectpacker')
 <!-- install.packages('rectpacker', repos = c('https://coolbutuseless.r-universe.dev', 'https://cloud.r-project.org')) -->
 <!-- ``` -->
 
-## Simple example
+## Packing rectangles into a box
 
-Pack 100 randomly sized rectangles into a 50x25 box
+Pack 100 randomly sized rectangles into a 50x25 box.
+
+Note that not all rectangles will fit into this box, but the algorithm does 
+the best it can. If a rectangle cannot fit, then `packed = FALSE`
 
 ```{r example}
 library(ggplot2)
@@ -62,8 +68,6 @@ N       <- 100
 widths  <- sample(7, N, replace = TRUE)
 heights <- sample(6, N, replace = TRUE)
 rects   <- pack_rects(50, 25, widths, heights)
-rects$w <- widths
-rects$h <- heights
 
 # How many of the 100 rectangles actually got packed?
 table(rects$packed)
@@ -89,6 +93,44 @@ ggplot(rects) +
   theme_minimal() + 
   theme(legend.position = 'none') + 
   scale_fill_viridis_d()
+```
+
+
+## Finding a good box size to pack rectangles into
+
+Often it is necessary to find the size of a box which will fit all rectangles
+without too much wasted space.
+
+`calc_small_box()` performs a brute force search for a suitable box within the 
+set of boxes of a given aspect ratio.
+
+Note: This search is not guaranteed to find the absolute minimal box size.
+
+```{r}
+set.seed(1)
+N <- 100
+rect_widths  <- sample(N, N, T)
+rect_heights <- sample(N, N, T)
+box <- calc_small_box(rect_widths, rect_heights)
+box
+rects <- pack_rects(box$width, box$height, rect_widths, rect_heights)
+
+ggplot(rects) +
+  geom_rect(
+    aes(
+      xmin = x,
+      ymin = y,
+      xmax = x + w,
+      ymax = y + h,
+      fill = as.factor(idx)
+    ),
+    col  = 'black'
+  ) + 
+  annotate('rect', xmin = 0, ymin = 0, xmax = box$width, ymax = box$height, fill = NA, col = 'red') + 
+  coord_equal() + 
+  theme_minimal() + 
+  theme(legend.position = 'none') + 
+  scale_fill_viridis_d(option = 'D')
 ```
 
 

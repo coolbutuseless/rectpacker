@@ -87,11 +87,13 @@ SEXP pack_rects_(SEXP box_width_, SEXP box_height_, SEXP w_, SEXP h_) {
   SEXP y_      = PROTECT(allocVector(INTSXP, nrects)); nprotect++;
   SEXP packed_ = PROTECT(allocVector(LGLSXP, nrects)); nprotect++;
   
-  SEXP df_ = PROTECT(create_named_list(4, 
-                                       "idx", idx_, 
+  SEXP df_ = PROTECT(create_named_list(6, 
+                                       "idx"   , idx_, 
+                                       "w"     , w_, 
+                                       "h"     , h_,
                                        "packed", packed_,
-                                       "x", x_, 
-                                       "y", y_)); nprotect++;
+                                       "x"     , x_, 
+                                       "y"     , y_)); nprotect++;
   set_df_attributes(df_);
   
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -108,8 +110,8 @@ SEXP pack_rects_(SEXP box_width_, SEXP box_height_, SEXP w_, SEXP h_) {
       x[i] = NA_INTEGER;
       y[i] = NA_INTEGER;
     } else {
-      x[i]      = rects[i].x;
-      y[i]      = rects[i].y;
+      x[i] = rects[i].x;
+      y[i] = rects[i].y;
     }    
   }
   
