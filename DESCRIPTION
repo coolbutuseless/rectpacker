@@ -1,14 +1,21 @@
 Package: rectpacker
 Type: Package
-Title: Streaming Rectangle Packing
-Version: 0.1.0
+Title: Rectangle Packing
+Version: 1.0.0
 Authors@R: c(
-    person("Mike", "Cheng", role = c("aut", "cre", 'cph'), email = "mikefc@coolbutuseless.com")
+    person("Mike", "Cheng", role = c("aut", "cre", 'cph'), email = "mikefc@coolbutuseless.com"),
+    person("Sean", "Barrett", role = c("aut", 'cph'), comment = "Author of included stb_rect_pack.h library")
     )
 Maintainer: Mike Cheng <mikefc@coolbutuseless.com>
 URL: https://github.com/coolbutuseless/rectpacker
 BugReports: https://github.com/coolbutuseless/rectpacker/issues
-Description: Streaming rectangle packing.
+Description: Rectangle packing is a packing problem where rectangles are placed
+    into a larger rectangular region (without overlapping) in order to maximise
+    the use space.  Rectangles are packed using the skyline heuristic as discussed 
+    in Lijun et al (2011) 'A Skyline-Based Heuristic for the 2D Rectangular Strip
+    Packing Problem' <doi:10.1007/978-3-642-21827-9_29>.  A function is also 
+    included for determining a good small-sized box for containing a given
+    set of rectangles.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
