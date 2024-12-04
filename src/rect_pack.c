@@ -34,7 +34,7 @@ SEXP pack_rects_(SEXP box_width_, SEXP box_height_, SEXP w_, SEXP h_) {
   int *h = INTEGER(h_);
   
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Create rectangles for call to STB lib
+  // Create array of rectangle structs for call to STB lib
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   int nrects = length(w_);
   stbrp_rect *rects = NULL;
@@ -59,13 +59,10 @@ SEXP pack_rects_(SEXP box_width_, SEXP box_height_, SEXP w_, SEXP h_) {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   stbrp_context ctx = { 0 };
   
-  int box_width = asInteger(box_width_);
+  int box_width  = asInteger(box_width_);
   int box_height = asInteger(box_height_);
   
-  int nnodes = 10 * nrects;
-  if (nnodes < box_width) {
-    nnodes = box_width * 4;  
-  }
+  int nnodes = box_width * 4;
   
   stbrp_node *nodes = calloc((size_t)nnodes, sizeof(stbrp_node));
   if (nodes == NULL) {
@@ -73,7 +70,7 @@ SEXP pack_rects_(SEXP box_width_, SEXP box_height_, SEXP w_, SEXP h_) {
   }
   
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Let it pack!
+  // Get packing!
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   stbrp_init_target(&ctx, box_width, box_height, nodes, nnodes);
   stbrp_setup_heuristic(&ctx, STBRP_HEURISTIC_Skyline_BF_sortHeight);
@@ -103,6 +100,7 @@ SEXP pack_rects_(SEXP box_width_, SEXP box_height_, SEXP w_, SEXP h_) {
   int *x      = INTEGER(x_);
   int *y      = INTEGER(y_);
   int *packed = INTEGER(packed_);
+  
   for (int i = 0; i < nrects; i++) {
     idx[i]    = i;
     packed[i] = rects[i].was_packed;

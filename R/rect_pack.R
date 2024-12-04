@@ -12,16 +12,19 @@
 #' @return data.frame of packing information
 #' \describe{
 #'   \item{\code{idx}}{Integer index of rectangle in the input}
+#'   \item{\code{w,h}}{Integer dimensions of each rectangle}
 #'   \item{\code{packed}}{Logical: Was this rectangle packed into the box?}
-#'   \item{\code{x,y}}{coordinates of packing position of bottom-left of rectangle}
+#'   \item{\code{x,y}}{Integer coordinates of packing position of bottom-left of rectangle}
 #' }
 #' @examples
 #' # Pack 10 rectangles into a 25x25 box
+#' # Note: All rectangles in the results have 'packed=TRUE' which
+#' # means they all fit into the box
 #' set.seed(1)
 #' N <- 10
-#' widths  <- sample(N)
-#' heights <- sample(N)
-#' pack_rects(box_width = 25, box_height = 25, widths, heights)
+#' rect_widths  <- sample(N)
+#' rect_heights <- sample(N)
+#' pack_rects(box_width = 25, box_height = 25, rect_widths, rect_heights)
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 pack_rects <- function(box_width, box_height, rect_widths, rect_heights) {
@@ -29,57 +32,76 @@ pack_rects <- function(box_width, box_height, rect_widths, rect_heights) {
 }
 
 
+
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#' Find a small box to store all the given rectangles
+#' Find the dimensions of a small box to store all the given rectangles
 #' 
-#' This is a brute force search with a simple heuristic, and is not 
-#' guaranteed to find the box with the miinimum area, but simply a box
+#' This is a brute force search with a simple heuristic. Is not 
+#' guaranteed to find the box with the minimum area, but simply a box
 #' that snugly fits the rectangles without too much wasted space.
 #' 
 #' @inheritParams pack_rects
 #' @param aspect_ratios Vector of box aspect ratios to be tested. Aspect ratio 
 #'        is defined here as \code{width / height}. Default: \code{c(1.61803, 1/1.61803)}
-#'        i.e. golden ratio
+#'        i.e. golden ratio and its inverse.
 #' @param verbosity Level of debugging output. Default: 0 (no output)
-#' @return list with w elements: box width and height
+#' @return List with 2 elements: \code{width} and \code{height} of a small box
+#'         which fits all the rectangles.
 #' @examples
 #' # Find a minimal box to fit 10 random rectangles.
 #' # Search for boxes with aspect ratios in seq(0.5, 2, length.out = 20)
 #' set.seed(2)
 #' N <- 10
-#' widths  <- sample(N)
-#' heights <- sample(N)
-#' box <- calc_small_box(widths, heights, aspect_ratios = seq(0.5, 2, length.out = 20))
+#' rect_widths  <- sample(N)
+#' rect_heights <- sample(N)
+#' box <- calc_small_box(rect_widths, rect_heights, 
+#'                       aspect_ratios = seq(0.5, 2, length.out = 20))
 #' box
-#' pack_rects(box$width, box$height, widths, heights)
+#' rects <- pack_rects(box$width, box$height, rect_widths, rect_heights)
+#' all(rects$packed)
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 calc_small_box <- function(rect_widths, rect_heights, aspect_ratios = c(1.61803, 1/1.61803), verbosity = 0L) {
   
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  # Sanity check
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   stopifnot(length(rect_widths) == length(rect_heights))
   tarea <- sum(rect_widths * rect_heights)
   
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  # Keep track of the best (w, h) (which has the smallest area) which contains 
+  # all the rects
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   best_w    <- Inf
   best_h    <- Inf
   best_area <- Inf
   
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  # Try a range of aspect ratios around the mean aspect ratio
+  # For each aspect ratio
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   count <- 0L
   for (aspect in aspect_ratios) {
     
+    # Calculate the minimum width and height which might contain 
+    # all the rectangles
     min_h <- sqrt(tarea / aspect)
     min_w <- tarea / min_h
     min_w <- as.integer(floor(min_w))
     min_h <- as.integer(floor(min_h))
     
+    # At each aspect ratio, keep expanding the 'w' and 'h'
+    # until we find a box which fits all rectangles.
     offset <- 0L
     found_at_aspect <- FALSE
     
     while(!found_at_aspect) {    
       for (expand in 1:3) {
         
+        # Three types of expansion to try at each step
+        #  - increase width by 1
+        #  - increase height by 1
+        #  - increase both width and height by 1
         if (expand == 1) {
           w <- min_w + offset
           h <- min_h + offset
@@ -91,9 +113,12 @@ calc_small_box <- function(rect_widths, rect_heights, aspect_ratios = c(1.61803,
           h <- min_h + offset + 1L
         }
 
+        # If the area is ever less than the total area of all the rectangles
+        # then this can't possibly be a solution
         if (w * h < tarea) next        
         rects <- pack_rects(w, h, rect_widths, rect_heights)
         
+        # Print information about each iteration
         if (verbosity > 0) {
           count <- count + 1L
           cat(sprintf(
@@ -129,40 +154,4 @@ calc_small_box <- function(rect_widths, rect_heights, aspect_ratios = c(1.61803,
     height = as.integer(round(best_h))
   )
 }
-
-
-if (FALSE) {
-  
-  set.seed(1)
-  N <- 100
-  rect_widths  <- sample(N, N, T)
-  rect_heights <- sample(N, N, T)
-  box <- calc_small_box(rect_widths, rect_heights, verbosity = 1)
-  box
-  rects <- pack_rects(box$width, box$height, rect_widths, rect_heights)
-  # rects <- pack_rects(25, 25, widths, heights)
-  rects
-  
-  ggplot(rects) +
-    geom_rect(
-      aes(
-        xmin = x,
-        ymin = y,
-        xmax = x + w,
-        ymax = y + h,
-        fill = as.factor(idx)
-      ),
-      col  = 'black'
-    ) + 
-    annotate('rect', xmin = 0, ymin = 0, xmax = box$width, ymax = box$height, fill = NA, col = 'red') + 
-    coord_equal() + 
-    theme_minimal() + 
-    theme(legend.position = 'none') + 
-    scale_fill_viridis_d(option = 'D')
-  
-  
-}
-
-
-
 

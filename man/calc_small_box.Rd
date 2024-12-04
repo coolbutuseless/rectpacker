@@ -2,7 +2,7 @@
 % Please edit documentation in R/rect_pack.R
 \name{calc_small_box}
 \alias{calc_small_box}
-\title{Find a small box to store all the given rectangles}
+\title{Find the dimensions of a small box to store all the given rectangles}
 \usage{
 calc_small_box(
   rect_widths,
@@ -16,16 +16,17 @@ calc_small_box(
 
 \item{aspect_ratios}{Vector of box aspect ratios to be tested. Aspect ratio 
 is defined here as \code{width / height}. Default: \code{c(1.61803, 1/1.61803)}
-i.e. golden ratio}
+i.e. golden ratio and its inverse.}
 
 \item{verbosity}{Level of debugging output. Default: 0 (no output)}
 }
 \value{
-list with w elements: box width and height
+List with 2 elements: \code{width} and \code{height} of a small box
+        which fits all the rectangles.
 }
 \description{
-This is a brute force search with a simple heuristic, and is not 
-guaranteed to find the box with the miinimum area, but simply a box
+This is a brute force search with a simple heuristic. Is not 
+guaranteed to find the box with the minimum area, but simply a box
 that snugly fits the rectangles without too much wasted space.
 }
 \examples{
@@ -33,9 +34,11 @@ that snugly fits the rectangles without too much wasted space.
 # Search for boxes with aspect ratios in seq(0.5, 2, length.out = 20)
 set.seed(2)
 N <- 10
-widths  <- sample(N)
-heights <- sample(N)
-box <- calc_small_box(widths, heights, aspect_ratios = seq(0.5, 2, length.out = 20))
+rect_widths  <- sample(N)
+rect_heights <- sample(N)
+box <- calc_small_box(rect_widths, rect_heights, 
+                      aspect_ratios = seq(0.5, 2, length.out = 20))
 box
-pack_rects(box$width, box$height, widths, heights)
+rects <- pack_rects(box$width, box$height, rect_widths, rect_heights)
+all(rects$packed)
 }

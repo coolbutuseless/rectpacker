@@ -16,8 +16,9 @@ rectangles will be packed. Integer values.}
 data.frame of packing information
 \describe{
   \item{\code{idx}}{Integer index of rectangle in the input}
+  \item{\code{w,h}}{Integer dimensions of each rectangle}
   \item{\code{packed}}{Logical: Was this rectangle packed into the box?}
-  \item{\code{x,y}}{coordinates of packing position of bottom-left of rectangle}
+  \item{\code{x,y}}{Integer coordinates of packing position of bottom-left of rectangle}
 }
 }
 \description{
@@ -25,9 +26,11 @@ This implementation accepts only integer valued sizes and coordinates.
 }
 \examples{
 # Pack 10 rectangles into a 25x25 box
+# Note: All rectangles in the results have 'packed=TRUE' which
+# means they all fit into the box
 set.seed(1)
 N <- 10
-widths  <- sample(N)
-heights <- sample(N)
-pack_rects(box_width = 25, box_height = 25, widths, heights)
+rect_widths  <- sample(N)
+rect_heights <- sample(N)
+pack_rects(box_width = 25, box_height = 25, rect_widths, rect_heights)
 }

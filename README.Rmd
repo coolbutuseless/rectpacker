@@ -23,12 +23,12 @@ library(rectpacker)
 [![R-CMD-check](https://github.com/coolbutuseless/rectpacker/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/coolbutuseless/rectpacker/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
-'rectpacker' implements the skyline algorithm for packing rectangles into a box.
+'rectpacker' implements the skyline algorithm for packing rectangles into a box
+using `stb_rect_pack.h` from [stb](https://github.com/nothings/stb).
 
 I wrote this package as I needed to assemble graphical assets
 into a single image - hopefully minimising the size of the final image.
 
-This package uses `stb_rect_pack.h` from [stb](https://github.com/nothings/stb).
 
 ## Installation
 
