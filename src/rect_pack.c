@@ -5,6 +5,7 @@
 #include <stdbool.h>
 #include <unistd.h>
 
+#define R_NO_REMAP
 #include <R.h>
 #include <Rinternals.h>
 #include <Rdefines.h>
@@ -27,8 +28,8 @@ SEXP pack_rects_(SEXP box_width_, SEXP box_height_, SEXP w_, SEXP h_) {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Sanity check rectangles
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  if (length(w_) != length(h_)) {
-    error("widths and heights must be same length");
+  if (Rf_length(w_) != Rf_length(h_)) {
+    Rf_error("widths and heights must be same length");
   }
   int *w = INTEGER(w_);
   int *h = INTEGER(h_);
@@ -36,11 +37,11 @@ SEXP pack_rects_(SEXP box_width_, SEXP box_height_, SEXP w_, SEXP h_) {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Create array of rectangle structs for call to STB lib
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  int nrects = length(w_);
+  int nrects = Rf_length(w_);
   stbrp_rect *rects = NULL;
   rects = calloc((size_t)nrects, sizeof(stbrp_rect));
   if (rects == NULL) {
-    error("rects: couldn't allocate");
+    Rf_error("rects: couldn't allocate");
   }
   
   for (int i = 0; i < nrects; i++) {
@@ -59,14 +60,14 @@ SEXP pack_rects_(SEXP box_width_, SEXP box_height_, SEXP w_, SEXP h_) {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   stbrp_context ctx = { 0 };
   
-  int box_width  = asInteger(box_width_);
-  int box_height = asInteger(box_height_);
+  int box_width  = Rf_asInteger(box_width_);
+  int box_height = Rf_asInteger(box_height_);
   
   int nnodes = box_width * 4;
   
   stbrp_node *nodes = calloc((size_t)nnodes, sizeof(stbrp_node));
   if (nodes == NULL) {
-    error("nodes: Couldn't allocate");
+    Rf_error("nodes: Couldn't allocate");
   }
   
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -79,10 +80,10 @@ SEXP pack_rects_(SEXP box_width_, SEXP box_height_, SEXP w_, SEXP h_) {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Prepare a data.frame to copy results into
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  SEXP idx_    = PROTECT(allocVector(INTSXP, nrects)); nprotect++;
-  SEXP x_      = PROTECT(allocVector(INTSXP, nrects)); nprotect++;
-  SEXP y_      = PROTECT(allocVector(INTSXP, nrects)); nprotect++;
-  SEXP packed_ = PROTECT(allocVector(LGLSXP, nrects)); nprotect++;
+  SEXP idx_    = PROTECT(Rf_allocVector(INTSXP, nrects)); nprotect++;
+  SEXP x_      = PROTECT(Rf_allocVector(INTSXP, nrects)); nprotect++;
+  SEXP y_      = PROTECT(Rf_allocVector(INTSXP, nrects)); nprotect++;
+  SEXP packed_ = PROTECT(Rf_allocVector(LGLSXP, nrects)); nprotect++;
   
   SEXP df_ = PROTECT(create_named_list(6, 
                                        "idx"   , idx_, 

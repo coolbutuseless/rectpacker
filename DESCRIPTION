@@ -18,7 +18,6 @@ Description: Rectangle packing is a packing problem where rectangles are placed
     set of rectangles.
 License: MIT + file LICENSE
 Encoding: UTF-8
-LazyData: true
 RoxygenNote: 7.3.2
 Copyright: The included 'stb_rect_pack.h' header (v1.01) is Copyright (c) 2017 
     Sean Barrett and licensed under the MIT license.  
