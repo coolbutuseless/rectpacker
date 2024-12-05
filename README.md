@@ -11,23 +11,19 @@
 <!-- badges: end -->
 
 ‘rectpacker’ implements the skyline algorithm for packing rectangles
-into a box.
+into a box using `stb_rect_pack.h` from
+[stb](https://github.com/nothings/stb).
 
 I wrote this package as I needed to assemble graphical assets into a
 single image - hopefully minimising the size of the final image.
 
-This package uses `stb_rect_pack.h` from
-[stb](https://github.com/nothings/stb).
-
 ## Installation
 
-<!-- This package can be installed from CRAN -->
+This package can be installed from CRAN
 
-<!-- ``` r -->
-
-<!-- install.packages('rectpacker') -->
-
-<!-- ``` -->
+``` r
+install.packages('rectpacker')
+```
 
 You can install the latest development version from
 [GitHub](https://github.com/coolbutuseless/rectpacker) with:
@@ -37,15 +33,12 @@ You can install the latest development version from
 remotes::install_github('coolbutuseless/rectpacker')
 ```
 
-<!-- Pre-built source/binary versions can also be installed from -->
+Pre-built source/binary versions can also be installed from
+[R-universe](https://r-universe.dev)
 
-<!-- [R-universe](https://r-universe.dev) -->
-
-<!-- ``` r -->
-
-<!-- install.packages('rectpacker', repos = c('https://coolbutuseless.r-universe.dev', 'https://cloud.r-project.org')) -->
-
-<!-- ``` -->
+``` r
+install.packages('rectpacker', repos = c('https://coolbutuseless.r-universe.dev', 'https://cloud.r-project.org'))
+```
 
 ## Packing rectangles into a box
 
