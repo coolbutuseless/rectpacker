@@ -12,8 +12,8 @@ BugReports: https://github.com/coolbutuseless/rectpacker/issues
 Description: Rectangle packing is a packing problem where rectangles are placed
     into a larger rectangular region (without overlapping) in order to maximise
     the use of space.  Rectangles are packed using the skyline heuristic as discussed 
-    in Lijun et al (2011) 'A Skyline-Based Heuristic for the 2D Rectangular Strip
-    Packing Problem' <doi:10.1007/978-3-642-21827-9_29>.  A function is also 
+    in Lijun et al (2011) "A Skyline-Based Heuristic for the 2D Rectangular Strip
+    Packing Problem" <doi:10.1007/978-3-642-21827-9_29>.  A function is also 
     included for determining a good small-sized box for containing a given
     set of rectangles.
 License: MIT + file LICENSE
